@@ -1,0 +1,6 @@
+Flask
+openai
+twilio
+python-dotenv
+gunicorn
+
