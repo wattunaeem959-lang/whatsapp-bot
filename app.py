@@ -26,7 +26,6 @@ def home():
         except Exception as e:
     print(f"Gemini Error: {e}")
     ai_reply = f"Error: {e}"
-    
         msg.body(ai_reply)
         return str(resp)
 
