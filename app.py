@@ -3,17 +3,20 @@ load_dotenv()
 
 from flask import Flask, request
 import os
+import google.generativeai as genai
 from twilio.twiml.messaging_response import MessagingResponse
-from openai import OpenAI
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+# Gemini setup
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 @app.route("/")
 def home():
-    return "Bot is Running with AI!"
+    return "Bot is Running with FREE AI!"
 
-@app.route("/whatsapp", methods=["POST"])
+@app.route("/whatsapp-reply", methods=["POST"])
 def whatsapp_reply():
     incoming_msg = request.values.get('Body', '').strip()
     resp = MessagingResponse()
@@ -24,20 +27,11 @@ def whatsapp_reply():
         return str(resp)
 
     try:
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful WhatsApp assistant. Reply in Hinglish, short and friendly."},
-                {"role": "user", "content": incoming_msg}
-            ]
-        )
-        ai_reply = completion.choices[0].message.content
-        msg.body(ai_reply)
+        response = model.generate_content(incoming_msg)
+        ai_reply = response.text
     except Exception as e:
-        print(e)
-        msg.body("AI thoda busy hai, 1 min baad try karo 🙏")
+        print(f"Gemini Error: {e}")
+        ai_reply = "AI thoda busy hai, 1 min baad try karo 🙏"
 
+    msg.body(ai_reply)
     return str(resp)
-
-if __name__ == "__main__":
-    app.run()

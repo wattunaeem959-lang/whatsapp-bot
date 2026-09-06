@@ -1,6 +1,5 @@
 Flask
-openai
 twilio
+google-generativeai
 python-dotenv
-gunicorn
 
