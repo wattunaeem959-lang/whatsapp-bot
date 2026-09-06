@@ -24,9 +24,9 @@ def home():
             response = model.generate_content(incoming_msg)
             ai_reply = response.text
         except Exception as e:
-            print(f"Gemini Error: {e}")
-            ai_reply = "AI thoda busy hai, 1 min baad try karo 🙏"
-
+    print(f"Gemini Error: {e}")
+    ai_reply = f"Error: {e}"
+    
         msg.body(ai_reply)
         return str(resp)
 
